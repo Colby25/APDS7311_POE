@@ -13,7 +13,15 @@ app.use((req, res, next) => {
 
 // Importing user routes
 const userRoutes = require('./routes/userRoutes');
+
+// Importing payment routes
+const paymentRoutes = require('./routes/paymentRoutes');
+
+// Use user routes
 app.use('/api/users', userRoutes);
+
+// Use payment routes
+app.use('/api/payments', paymentRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -25,4 +33,5 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((error) => {
         console.log(error);
     });
+
 
