@@ -21,10 +21,18 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page reload on form submit
         try {
-            const response = await axios.post('http://localhost:4000/api/users/signup', formData); // POST request to backend
+            // POST request to backend
+            const response = await axios.post('http://localhost:4000/api/users/signup', formData);
             console.log('Response data:', response.data); // Log the response from the server
         } catch (error) {
-            console.error('Error occurred:', error.response.data); // Log the error if signup fails
+            // If there is a response from the server, log it
+            if (error.response) {
+                console.error('Error occurred:', error.response.data); // Log the error if signup fails
+                alert(`Signup failed: ${error.response.data.error}`);
+            } else {
+                console.error('Error occurred:', error.message); // Log general errors
+                alert(`Signup failed: ${error.message}`);
+            }
         }
     };
 

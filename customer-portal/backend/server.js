@@ -1,8 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Import the cors package
 require('dotenv').config();
 
 const app = express();
+
+// Use CORS middleware
+app.use(cors({
+    origin: 'http://localhost:3000', // Replace with your frontend URL if needed
+}));
+
 app.use(express.json());
 
 // Middleware for logging requests
@@ -33,5 +40,3 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((error) => {
         console.log(error);
     });
-
-

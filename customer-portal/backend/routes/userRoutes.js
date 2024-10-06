@@ -1,3 +1,5 @@
+// routes/userRoutes.js
+
 const express = require('express');
 const bcrypt = require('bcrypt'); // For password hashing
 const jwt = require('jsonwebtoken'); // For generating tokens
@@ -27,38 +29,48 @@ router.post('/signup', async (req, res) => {
         // Respond with a success message
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-        res.status(400).json({ error: 'Error registering user' });
-    }
-});
+        console.error('Error occurred while registering user:', error);
 
-// POST /api/users/login
-router.post('/login', async (req, res) => {
-    const { idNumber, password } = req.body;
-
-    try {
-        // Find the user by ID number
-        const user = await User.findOne({ idNumber });
-
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid ID number or password' });
+        // Check for validation errors
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ error: error.message });
         }
 
-        // Compare the provided password with the stored hashed password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid ID number or password' });
+        // Check for duplicate key errors
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'User with that ID number or account number already exists' });
         }
 
-        // Generate a token (optional)
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        // Respond with success message and token
-        res.status(200).json({ message: 'Login successful', token });
-    } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-module.exports = router;
+// Login function
+const login = async (req, res) => {
+    const { accountNumber, password } = req.body;
+    try {
+        const user = await User.findOne({ accountNumber });
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid account number or password' });
+        }
 
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid account number or password' });
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({ message: 'Login successful', token });
+    } catch (error) {
+        console.error('Error occurred during login:', error); // Log the error for debugging
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+
+// Define the login route
+router.post('/login', login); // Add this line to set up the login route
+
+module.exports = router;
