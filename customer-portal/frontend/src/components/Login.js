@@ -1,10 +1,8 @@
-// src/components/Login.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const Login = () => {
+const Login = ({ onLogin }) => { // Accept onLogin as a prop
     const [loginData, setLoginData] = useState({
         accountNumber: '',
         password: '',
@@ -21,26 +19,19 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page reload on form submit
 
-        // Log the data being sent
-        console.log('Login attempt:', loginData); // Log input data
-
         try {
             const response = await axios.post('http://localhost:4000/api/users/login', loginData); // POST request to backend
-            console.log('Login successful:', response.data); // Log the response from the server
-
-            // Perform actions upon successful login
             if (response.status === 200) {
                 console.log('User logged in successfully:', response.data.message);
-                // Redirect user to the desired page after successful login
-                navigate('/home'); // Change '/home' to the desired route
+                onLogin(); // Call onLogin to update login status in App.js
+
+                // Redirect to payment page with success message
+                navigate('/payment', { state: { successMessage: `Logged in successfully as "${loginData.accountNumber}"!` } });
             }
         } catch (error) {
             if (error.response) {
-                // Log specific server error response
-                console.error('Login error:', error.response.data); // Log the error if login fails
-                console.error('Status Code:', error.response.status); // Log status code for more insight
+                console.error('Login error:', error.response.data); // Log error if login fails
             } else {
-                // Log error if response is not received
                 console.error('Login error:', error.message);
             }
         }
@@ -68,3 +59,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
+

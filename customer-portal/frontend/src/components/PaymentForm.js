@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 
 const PaymentForm = () => {
+  const location = useLocation(); // Get location object
+  const { successMessage } = location.state || {}; // Get success message from location state
+
   const [paymentDetails, setPaymentDetails] = useState({
     amount: '',
     currency: '',
@@ -21,7 +25,7 @@ const PaymentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4000/api/payments', {  // Make sure this URL matches your backend
+      const response = await fetch('http://localhost:4000/api/payments', { // Make sure this URL matches your backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,6 +57,8 @@ const PaymentForm = () => {
 
   return (
     <div>
+      {/* Display the success message if it exists */}
+      {successMessage && <p>{successMessage}</p>}
       <h2>Make a Payment</h2>
       <form onSubmit={handleSubmit}>
         <label>Amount:</label>
