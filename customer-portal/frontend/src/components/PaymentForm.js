@@ -18,13 +18,14 @@ const PaymentForm = () => {
 
   // Define regex patterns for validation
   const patterns = {
-    amount: /^[0-9]+(\.[0-9]{1,2})?$/, // Positive decimal number to 2 places
-    currency: /^[A-Za-z]{3}$/, //letters
+    amount: /^[0-9]+(\.[0-9]{1,2})$/, // Positive decimal number to 2 places
+    currency: /^[A-Za-z]{3}$/, // 3 letters
     provider: /^[A-Za-z0-9 ]+$/, // Alphanumeric characters and spaces
-    swiftCode: /^[A-Za-z]{6}[A-Za-z0-9]{2}([A-Za-z0-9]{3})?$/, // Valid SWIFT/BIC format
+    swiftCode: /^[A-Za-z]{1,}[A-Za-z0-9]{1,}([A-Za-z0-9]{0,})?$/, // Valid SWIFT/BIC format
     recipientName: /^[A-Za-z\s]+$/, // Letters and spaces
     recipientAccount: /^\d{5,16}$/, // 5 to 16 digit account number
-  };
+};
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,7 +61,7 @@ const PaymentForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/payments', { 
+      const response = await fetch('https://localhost:4000/api/payments', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
