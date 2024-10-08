@@ -19,7 +19,7 @@ const PaymentForm = () => {
   // Define regex patterns for validation
   const patterns = {
     amount: /^[0-9]+(\.[0-9]{1,2})?$/, // Positive decimal number to 2 places
-    currency: /^[A-Za-z]{}$/, //letters
+    currency: /^[A-Za-z]{3}$/, //letters
     provider: /^[A-Za-z0-9 ]+$/, // Alphanumeric characters and spaces
     swiftCode: /^[A-Za-z]{6}[A-Za-z0-9]{2}([A-Za-z0-9]{3})?$/, // Valid SWIFT/BIC format
     recipientName: /^[A-Za-z\s]+$/, // Letters and spaces
