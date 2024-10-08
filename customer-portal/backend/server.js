@@ -15,7 +15,7 @@ app.use(helmet());
 
 // Use CORS middleware
 app.use(cors({
-    origin: 'https://localhost:3000',
+    origin: 'http://localhost:3000',
 }));
 
 app.use(express.json());

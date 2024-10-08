@@ -18,7 +18,7 @@ const PaymentForm = () => {
 
   // Define regex patterns for validation
   const patterns = {
-    amount: /^[0-9]+(\.[0-9]{1,2})$/, // Positive decimal number to 2 places
+    amount: /^[0-9]+$/, // Positive whole number
     currency: /^[A-Za-z]{3}$/, // 3 letters
     provider: /^[A-Za-z0-9 ]+$/, // Alphanumeric characters and spaces
     swiftCode: /^[A-Za-z]{1,}[A-Za-z0-9]{1,}([A-Za-z0-9]{0,})?$/, // Valid SWIFT/BIC format
@@ -101,7 +101,7 @@ const PaymentForm = () => {
           name="amount"
           value={paymentDetails.amount}
           onChange={handleChange}
-          placeholder="Enter amount (e.g., 100.00)"
+          placeholder="Enter amount (e.g., 100)"
           required
         />
         {errors.amount && <p className="error">{errors.amount}</p>} {/* Error message */}
