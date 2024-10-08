@@ -20,7 +20,7 @@ const Signup = () => {
         surname: /^[a-zA-Z]{2,30}$/, // Letters only, 2 to 30 characters
         idNumber: /^\d{6,16}$/, // 6 to 16 digits
         accountNumber: /^\d{5,16}$/, // 5 to 16? digits
-        password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, // At least 8 characters, at least 1 letter and 1 number
+        password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/, // At least 8 characters, at least 1 letter, 1 number, and 1 special symbol
     };
 
     // Handle form input changes
@@ -117,7 +117,7 @@ const Signup = () => {
                     type="password"
                     name="password"
                     onChange={handleChange}
-                    placeholder="Password (min 8 chars, 1 letter, 1 number)"
+                    placeholder="Password (min 8 chars, 1 letter, 1 number, 1 Symbol)"
                     required
                 />
                 {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>} {/* Display error for password */}

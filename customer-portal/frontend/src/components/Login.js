@@ -14,7 +14,7 @@ const Login = ({ onLogin }) => { // Accept onLogin as a prop
 
     // Basic regex patterns for validation
     const accountNumberPattern = /^[0-9]{5,10}$/; // Example: Account number must be 5-10 digits
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Password must be minimum 8 characters, at least one letter and one number
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/ // At least 8 characters, at least 1 letter, 1 number, and 1 special symbol
 
     // Handle form input changes
     const handleChange = (e) => {
