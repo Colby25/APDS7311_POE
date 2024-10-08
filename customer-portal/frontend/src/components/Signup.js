@@ -1,5 +1,3 @@
-// src/components/Signup.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
@@ -14,15 +12,48 @@ const Signup = () => {
     });
     const [message, setMessage] = useState(''); // State for success message
     const navigate = useNavigate(); // Hook to navigate
+    const [errors, setErrors] = useState({}); // State for input validation errors
+
+    // Regex patterns for validation
+    const patterns = {
+        name: /^[a-zA-Z]{2,30}$/, // Letters only, 2 to 30 characters
+        surname: /^[a-zA-Z]{2,30}$/, // Letters only, 2 to 30 characters
+        idNumber: /^\d{6,16}$/, // 6 to 16 digits
+        accountNumber: /^\d{5,16}$/, // 5 to 16? digits
+        password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, // At least 8 characters, at least 1 letter and 1 number
+    };
 
     // Handle form input changes
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        validateInput(e.target.name, e.target.value); // Validate input on change
+    };
+
+    // Validate input based on regex patterns
+    const validateInput = (name, value) => {
+        if (patterns[name]) {
+            if (!patterns[name].test(value)) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [name]: `Invalid ${name}. Please follow the format of the hint text`
+                }));
+            } else {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [name]: ''
+                }));
+            }
+        }
     };
 
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent page reload on form submit
+        if (Object.values(errors).some(error => error)) {
+            alert("Please fix the errors before submitting.");
+            return; // Prevent submission if there are validation errors
+        }
+
         try {
             // POST request to backend
             const response = await axios.post('http://localhost:4000/api/users/signup', formData);
@@ -46,11 +77,51 @@ const Signup = () => {
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <input type="text" name="name" onChange={handleChange} placeholder="Name" required />
-                <input type="text" name="surname" onChange={handleChange} placeholder="Surname" required />
-                <input type="text" name="idNumber" onChange={handleChange} placeholder="ID Number" required />
-                <input type="text" name="accountNumber" onChange={handleChange} placeholder="Account Number" required />
-                <input type="password" name="password" onChange={handleChange} placeholder="Password" required />
+                <input
+                    type="text"
+                    name="name"
+                    onChange={handleChange}
+                    placeholder="Name (2-30 letters)"
+                    required
+                />
+                {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>} {/* Display error for name */}
+
+                <input
+                    type="text"
+                    name="surname"
+                    onChange={handleChange}
+                    placeholder="Surname (2-30 letters)"
+                    required
+                />
+                {errors.surname && <p style={{ color: 'red' }}>{errors.surname}</p>} {/* Display error for surname */}
+
+                <input
+                    type="text"
+                    name="idNumber"
+                    onChange={handleChange}
+                    placeholder="ID Number (6-16 digits)"
+                    required
+                />
+                {errors.idNumber && <p style={{ color: 'red' }}>{errors.idNumber}</p>} {/* Display error for ID number */}
+
+                <input
+                    type="text"
+                    name="accountNumber"
+                    onChange={handleChange}
+                    placeholder="Account Number (5-16 digits)"
+                    required
+                />
+                {errors.accountNumber && <p style={{ color: 'red' }}>{errors.accountNumber}</p>} {/* Display error for account number */}
+
+                <input
+                    type="password"
+                    name="password"
+                    onChange={handleChange}
+                    placeholder="Password (min 8 chars, 1 letter, 1 number)"
+                    required
+                />
+                {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>} {/* Display error for password */}
+
                 <button type="submit">Sign Up</button>
             </form>
             {message && <p>{message}</p>} {/* Display success message */}
@@ -59,4 +130,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
