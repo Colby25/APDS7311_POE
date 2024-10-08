@@ -1,8 +1,21 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); 
+const helmet = require('helmet'); // Import helmet package for security headers
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
+
+// Protects against clickjacking and other vulnerabilities
+app.use(helmet());
+
+// Use CORS middleware
+app.use(cors({
+    origin: 'http://localhost:3000', 
+}));
+
 app.use(express.json());
 
 // Middleware for logging requests
@@ -33,5 +46,3 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((error) => {
         console.log(error);
     });
-
-
