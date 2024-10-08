@@ -49,7 +49,7 @@ const Login = ({ onLogin }) => {
         }
 
         try {
-            const response = await axios.post('http://localhost:4000/api/users/login', loginData); // POST request to backend
+            const response = await axios.post('https://localhost:4000/api/users/login', loginData); // POST request to backend
             if (response.status === 200) {
                 console.log('User logged in successfully:', response.data.message);
                 onLogin(); // Call onLogin to update login status in App.js

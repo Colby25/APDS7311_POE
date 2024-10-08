@@ -56,7 +56,7 @@ const Signup = () => {
 
         try {
             // POST request to backend
-            const response = await axios.post('http://localhost:4000/api/users/signup', formData);
+            const response = await axios.post('https://localhost:4000/api/users/signup', formData);
             console.log('Response data:', response.data); // Log the response from the server
             setMessage('Signup successful!'); // Set success message
             setTimeout(() => {
