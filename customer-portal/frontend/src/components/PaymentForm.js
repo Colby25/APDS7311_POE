@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom'; // Import useLocation
+import { useLocation } from 'react-router-dom'; 
 
 const PaymentForm = () => {
-  const location = useLocation(); // Get location object
-  const { successMessage } = location.state || {}; // Get success message from location state
+  const location = useLocation(); 
+  const { successMessage } = location.state || {}; 
 
   const [paymentDetails, setPaymentDetails] = useState({
     amount: '',
@@ -60,7 +60,7 @@ const PaymentForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/payments', { // Make sure this URL matches your backend
+      const response = await fetch('http://localhost:4000/api/payments', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const PaymentForm = () => {
       const data = await response.json();
       if (response.ok) {
         setMessage('Payment submitted successfully');
-        // Optionally clear the form fields
+        //  clears the form fields
         setPaymentDetails({
           amount: '',
           currency: '',
