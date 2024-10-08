@@ -1,13 +1,25 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const sanitize = require('mongo-sanitize'); //NoSQL protection
+const xss = require('xss'); //XXS protection
 
 // Signup function
 const signup = async (req, res) => {
-    const { name, surname, idNumber, accountNumber, password } = req.body;
+    // Sanitize input data - preventing NoSQL injection attack
+    const name = sanitize(req.body.name);
+    const surname = sanitize(req.body.surname);
+    const idNumber = sanitize(req.body.idNumber);
+    const accountNumber = sanitize(req.body.accountNumber);
+    const password = sanitize(req.body.password);
+    //const { name, surname, idNumber, accountNumber, password } = req.body;
+
+    // Preventing XXS attacks
+    const safeName = xss(name);
+    const safeSurname = xss(surname);
 
     // Validate the input data
-    if (!name || !surname || !idNumber || !accountNumber || !password) {
+    if (!safeName || !safeSurname || !idNumber || !accountNumber || !password) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -23,10 +35,15 @@ const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Create new user
-        const user = await User.create({ name, surname, idNumber, accountNumber, password: hashedPassword });
-
+        const user = await User.create({
+            name: safeName,
+            surname: safeSurname,
+            idNumber,
+            accountNumber,
+            password: hashedPassword
+        });
         // Respond with the user object (excluding the password)
-        res.status(201).json({ id: user._id, name: user.name, surname: user.surname, accountNumber: user.accountNumber });
+        res.status(201).json({ id: user._id, name: safeName, surname: safeSurname, accountNumber: user.accountNumber });
     } catch (error) {
         console.error('Error during signup:', error); // Log the error for debugging
         res.status(500).json({ error: 'Error registering user' });
