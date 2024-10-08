@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import the cors package
+const cors = require('cors'); 
 const helmet = require('helmet'); // Import helmet package for security headers
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -13,7 +13,7 @@ app.use(helmet());
 
 // Use CORS middleware
 app.use(cors({
-    origin: 'http://localhost:3000', // Replace with your frontend URL if needed
+    origin: 'http://localhost:3000', 
 }));
 
 app.use(express.json());

@@ -71,6 +71,6 @@ const login = async (req, res) => {
 
 
 // Define the login route
-router.post('/login', login); // Add this line to set up the login route
+router.post('/login', login); 
 
 module.exports = router;
