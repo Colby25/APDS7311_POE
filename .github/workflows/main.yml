@@ -15,15 +15,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install backend dependencies
-        run: npm install
-        working-directory: ./backend
+        run: |
+          cd customer-portal/backend
+          npm install
 
-      - name: Run backend build
-        run: npm run build
-        working-directory: ./backend
+      - name: Run backend build (if needed)
+        run: |
+          cd customer-portal/backend
+          npm run build # If you have a build script, adjust as necessary
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -34,12 +36,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install frontend dependencies
-        run: npm install
-        working-directory: ./frontend
+        run: |
+          cd customer-portal/frontend
+          npm install
 
-      - name: Run frontend build
-        run: npm run build
-        working-directory: ./frontend
+      - name: Run frontend build (if needed)
+        run: |
+          cd customer-portal/frontend
+          npm run build # Adjust as necessary for your frontend
