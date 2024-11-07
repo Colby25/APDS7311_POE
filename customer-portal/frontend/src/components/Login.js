@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
-const Login = ({ onLogin }) => { 
+const Login = ({ onLogin, closeModal }) => {
     const [loginData, setLoginData] = useState({
         accountNumber: '',
         password: '',
     });
 
     const [errorMessage, setErrorMessage] = useState(''); // State to store validation errors
-
     const navigate = useNavigate(); // Create a navigate instance
+
+    const modalRef = useRef(null); // Reference to the modal container
 
     // Basic regex patterns for validation
     const accountNumberPattern = /^[0-9]{5,10}$/; // Example: Account number must be 5-10 digits
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/ // At least 8 characters, at least 1 letter, 1 number, and 1 special symbol
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/; // At least 8 characters, at least 1 letter, 1 number, and 1 special symbol
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -54,7 +55,8 @@ const Login = ({ onLogin }) => {
                 console.log('User logged in successfully:', response.data.message);
                 onLogin(); // Call onLogin to update login status in App.js
 
-                // Redirect to payment page with success message
+                // Close the login modal and redirect to payment page with success message
+                closeModal();
                 navigate('/payment', { state: { successMessage: `Logged in successfully as "${loginData.accountNumber}"!` } });
             }
         } catch (error) {
@@ -66,8 +68,26 @@ const Login = ({ onLogin }) => {
         }
     };
 
+    // Close the modal when clicking outside of it
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (modalRef.current && !modalRef.current.contains(e.target)) {
+                closeModal(); // Close the modal if click is outside
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Cleanup the event listener when component unmounts
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [closeModal]);
+
     return (
-        <div>
+        <div className="login-modal" ref={modalRef}>
+        <div className="modal-content">
+            <span className="close" onClick={closeModal}>&times;</span> {/* Close button */}
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
@@ -85,10 +105,12 @@ const Login = ({ onLogin }) => {
                 />
                 <button type="submit">Login</button>
             </form>
-
+    
             {/* Display validation error messages */}
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </div>
+    </div>
+    
     );
 };
 

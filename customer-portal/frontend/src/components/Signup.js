@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
-const Signup = () => {
+const Signup = ({ closeModal }) => {
     const [formData, setFormData] = useState({
         name: '',
         surname: '',
@@ -13,6 +13,7 @@ const Signup = () => {
     const [message, setMessage] = useState(''); // State for success message
     const navigate = useNavigate(); // Hook to navigate
     const [errors, setErrors] = useState({}); // State for input validation errors
+    const modalRef = useRef(); // Reference to modal content to detect clicks outside
 
     // Regex patterns for validation
     const patterns = {
@@ -61,6 +62,7 @@ const Signup = () => {
             setMessage('Signup successful!'); // Set success message
             setTimeout(() => {
                 navigate('/login'); // Redirect to login page after a short delay
+                closeModal(); // Close the modal after successful signup
             }, 2000); // Adjust the delay as needed
         } catch (error) {
             // If there is a response from the server, log it
@@ -74,57 +76,77 @@ const Signup = () => {
         }
     };
 
+    // Close the modal when clicked outside of it
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (modalRef.current && !modalRef.current.contains(event.target)) {
+                closeModal();
+            }
+        };
+
+        // Attach the event listener
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Clean up the event listener on component unmount
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [closeModal]);
+
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="name"
-                    onChange={handleChange}
-                    placeholder="Name (2-30 letters)"
-                    required
-                />
-                {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>} {/* Display error for name */}
+        <div className="modal">
+            <div className="modal-content" ref={modalRef}>
+                <button onClick={closeModal} className="close-btn">X</button>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        name="name"
+                        onChange={handleChange}
+                        placeholder="Name (2-30 letters)"
+                        required
+                    />
+                    {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
 
-                <input
-                    type="text"
-                    name="surname"
-                    onChange={handleChange}
-                    placeholder="Surname (2-30 letters)"
-                    required
-                />
-                {errors.surname && <p style={{ color: 'red' }}>{errors.surname}</p>} {/* Display error for surname */}
+                    <input
+                        type="text"
+                        name="surname"
+                        onChange={handleChange}
+                        placeholder="Surname (2-30 letters)"
+                        required
+                    />
+                    {errors.surname && <p style={{ color: 'red' }}>{errors.surname}</p>}
 
-                <input
-                    type="text"
-                    name="idNumber"
-                    onChange={handleChange}
-                    placeholder="ID Number (6-16 digits)"
-                    required
-                />
-                {errors.idNumber && <p style={{ color: 'red' }}>{errors.idNumber}</p>} {/* Display error for ID number */}
+                    <input
+                        type="text"
+                        name="idNumber"
+                        onChange={handleChange}
+                        placeholder="ID Number (6-16 digits)"
+                        required
+                    />
+                    {errors.idNumber && <p style={{ color: 'red' }}>{errors.idNumber}</p>}
 
-                <input
-                    type="text"
-                    name="accountNumber"
-                    onChange={handleChange}
-                    placeholder="Account Number (5-16 digits)"
-                    required
-                />
-                {errors.accountNumber && <p style={{ color: 'red' }}>{errors.accountNumber}</p>} {/* Display error for account number */}
+                    <input
+                        type="text"
+                        name="accountNumber"
+                        onChange={handleChange}
+                        placeholder="Account Number (5-16 digits)"
+                        required
+                    />
+                    {errors.accountNumber && <p style={{ color: 'red' }}>{errors.accountNumber}</p>}
 
-                <input
-                    type="password"
-                    name="password"
-                    onChange={handleChange}
-                    placeholder="Password (min 8 chars, 1 letter, 1 number, 1 Symbol)"
-                    required
-                />
-                {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>} {/* Display error for password */}
+                    <input
+                        type="password"
+                        name="password"
+                        onChange={handleChange}
+                        placeholder="Password (min 8 chars, 1 letter, 1 number, 1 Symbol)"
+                        required
+                    />
+                    {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
 
-                <button type="submit">Sign Up</button>
-            </form>
-            {message && <p>{message}</p>} {/* Display success message */}
+                    <button type="submit">Sign Up</button>
+                </form>
+                {message && <p>{message}</p>}
+            </div>
         </div>
     );
 };
